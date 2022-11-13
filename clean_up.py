@@ -2,10 +2,10 @@ import os
 import subprocess
 
 
-white_list = ['Thumbs.db', '.DS_Store', '.localized', 'desktop.ini']
+ignorelist = ['Thumbs.db', '.DS_Store', '.localized', 'desktop.ini']
 
 for filename in os.listdir():
-    if filename in white_list or os.path.isdir(filename):
+    if filename in ignorelist or os.path.isdir(filename):
         continue
     print(filename)
     subprocess.run(["open", filename])
