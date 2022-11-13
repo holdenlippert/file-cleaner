@@ -24,6 +24,8 @@ def prompt(filename):
     title = f"What would you like to do with {filename}?"
     terminal_menu = TerminalMenu(options, title=title)
     selection = terminal_menu.show()
+    if selection is None:
+        sys.exit(0)
     return options[selection]
 
 
