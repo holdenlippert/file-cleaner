@@ -1,10 +1,13 @@
 import os
 import subprocess
+import sys
 from simple_term_menu import TerminalMenu
 
 
 KEEP = "Keep"
 DELETE = "Delete"
+
+redtext = lambda s: f'\x1b[31m{s}\x1b[0m'
 
 
 def get_ignorelist(filename='ignorelist.txt'):
@@ -23,15 +26,27 @@ def prompt(filename):
     return options[selection]
 
 
-ignorelist = get_ignorelist()
-
-for filename in os.listdir():
-    if filename in ignorelist or os.path.isdir(filename):
-        continue
-    subprocess.run(["open", filename])
+def handle_file(filename):
+    proc = subprocess.run(["open", filename], capture_output=True, encoding='utf-8')
+    if proc.stderr:
+        print(redtext(f"There was a problem opening {filename}:"))
+        print(redtext(proc.stderr))
     action = prompt(filename)
     if action == DELETE:
         print(f"Deleting {filename}")
         os.remove(filename)
     elif action == KEEP:
         print(f"Keeping {filename}")
+
+
+def main(argv):
+    ignorelist = get_ignorelist()
+
+    for filename in os.listdir():
+        if filename in ignorelist or os.path.isdir(filename):
+            continue
+        handle_file(filename)
+
+
+if __name__ == "__main__":
+    main(sys.argv)
